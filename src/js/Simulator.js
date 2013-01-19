@@ -94,6 +94,7 @@
         this.utils = new SimulatorUtils(this);
         this.graph.on('change', this.newGraph, this);
         this.prefs.on('change:algo', this.loadAlgo, this);
+        this.on('newGraph', this.initAlgo, this);
         this.loadAlgo();
       }
 
@@ -101,23 +102,28 @@
         var _this = this;
         return require(['algo/' + this.prefs.get('algo')], function(algo) {
           _this.algorithm = algo;
-          if (_this.algorithm != null) {
-            return _this.algorithm.init(_this.utils.getNodes());
-          }
+          return _this.initAlgo();
         });
       };
 
-      Simulator.prototype.newGraph = function() {
+      Simulator.prototype.initAlgo = function() {
+        if (this.algorithm != null) {
+          return this.algorithm.init(this.utils.getNodes());
+        }
+      };
+
+      Simulator.prototype.initGraphObjects = function() {
         var _this = this;
         this.system.eachNode(function(node) {
           return node.obj = new Node(_this.system, node, _this.utils);
         });
-        this.system.eachEdge(function(edge) {
+        return this.system.eachEdge(function(edge) {
           return edge.obj = new Edge(_this.system, edge, _this.utils);
         });
-        if (this.algorithm != null) {
-          this.algorithm.init(this.utils.getNodes());
-        }
+      };
+
+      Simulator.prototype.newGraph = function() {
+        this.initGraphObjects();
         return this.trigger('newGraph');
       };
 
@@ -127,6 +133,21 @@
 
       Simulator.prototype.isFinished = function() {
         return this.get('finished');
+      };
+
+      Simulator.prototype.showResult = function() {
+        var result,
+          _this = this;
+        result = this.algorithm.getResult();
+        this.graph.reparse();
+        return _.delay(function() {
+          return _.each(result, function(node) {
+            return _this.system.tweenNode(node.node.name, 1, {
+              color: node.DEFAULTS.markedColor,
+              size: 13
+            });
+          });
+        }, 500);
       };
 
       Simulator.prototype.restart = function() {

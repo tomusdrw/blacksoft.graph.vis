@@ -25,7 +25,7 @@ define(['_', 'backbone'], function(_, Backbone) {
 				return true;
 			});
 
-			slowly = _.isUndefined(slowly) ? 200: slowly;
+			slowly = _.isUndefined(slowly) ? 100: slowly;
 			//add nodes
 			var noOfNodes = this.slowly(slowly, _.map(graph.nodes, function(node) {
 				return function() {

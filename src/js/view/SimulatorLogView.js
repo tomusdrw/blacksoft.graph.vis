@@ -5,12 +5,14 @@ define(['backbone', '_'], function(Backbone, _) {
 		tpl: _.template('<p><span class="label label-info"><i class="icon icon-time"></i> <%= step %></span></p>'),
 		initialize: function() {
 			this.model.on('message', this.appendMessage, this);
-			this.model.on('newGraph', this.clearLog, this);
+			this.model.on('change:finished', this.clearLog, this);
 			this.$el.empty();
 		},
 
-		clearLog: function(msg) {
-			this.$el.empty();
+		clearLog: function(e, value) {
+      if (!value) {
+  			this.$el.empty();
+      }
 		},
 
 		appendMessage: function(msg) {

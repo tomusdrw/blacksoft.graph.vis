@@ -50,25 +50,38 @@ define ['require', 'backbone', 'arbor', 'SimulatorUtils'], (require, Backbone, a
        @utils = new SimulatorUtils(this)
        @graph.on('change', @newGraph, this)
        @prefs.on('change:algo', @loadAlgo, this)
+       @on('newGraph', @initAlgo, this)
        @loadAlgo()
 
      loadAlgo: ()->
-      require ['algo/'+@prefs.get('algo')], (algo) =>
-        @algorithm = algo
-        @algorithm.init(@utils.getNodes()) if @algorithm?
-        
-     newGraph: ()->
+       require ['algo/'+@prefs.get('algo')], (algo) =>
+         @algorithm = algo
+         @initAlgo()
+     initAlgo: ->
+         @algorithm.init(@utils.getNodes()) if @algorithm?
+     initGraphObjects: ->
        @system.eachNode (node) =>
          node.obj = new Node(@system, node, @utils)
        @system.eachEdge (edge) =>
          edge.obj = new Edge(@system, edge, @utils)
-       @algorithm.init(@utils.getNodes()) if @algorithm?
+     newGraph: ()->
+       @initGraphObjects()
        @trigger('newGraph')
-
      isRunning: ->
-        @get('running')
+       @get('running')
      isFinished: ->
-        @get('finished')
+       @get('finished')
+     showResult: ->
+       result = @algorithm.getResult()
+       @graph.reparse()
+       _.delay(=>
+          # Mark nodes in result 
+          _.each result, (node)=>
+            @system.tweenNode(node.node.name, 1, {
+              color: node.DEFAULTS.markedColor
+              size: 13
+            })
+       , 500)
      restart : ->
         @graph.reparse()
         # Soooo shitty!
