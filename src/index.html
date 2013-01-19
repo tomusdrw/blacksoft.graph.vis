@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>blacksoft.mis.vis</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+		<!-- build:css css/combined-<%= project.version %>.min.css-->
+        <link rel="stylesheet" href="css/vendor-bootstrap.css">
+        <link rel="stylesheet" href="css/vendor-font-awesome.css">
+        <link rel="stylesheet" href="css/main.css">
+        <!-- endbuild -->
+
+        <script src="js/vendor/modernizr-2.6.2.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+  
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="navbar-inner">
+                    <div class="container">
+                      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </a>
+                      <a class="brand" href="#"><i class="icon icon-facetime-video"></i> mis.vis</a>
+                      <div class="nav-collapse collapse">
+                        <ul class="nav">
+                          <li><a class="start" href="#start"><i class="icon icon-play"></i> Start</a></li>
+                          <li class="hidden"><a class="stop active" href="#stop"><i class="icon icon-stop"></i> Stop</a><li>
+                          <li><a class="step" href="#step"><i class="icon icon-step-forward"></i> Step</a></li>
+                          <li><a class="restart" href="#restart"><i class="icon icon-repeat"></i> Restart</a></li>
+                        </ul>
+                      </div><!--/.nav-collapse -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+
+            <!-- Main hero unit for a primary marketing message or call to action -->
+            <div class="main">
+                <canvas class="canvas" width="600" height="400"></canvas>
+            </div>
+            <div class="hero-unit">
+                <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+            </div>
+
+            <hr>
+            <footer>
+                <p>&copy; Blacksoft 2013</p>
+            </footer>
+        </div> <!-- /container -->
+        
+        <!-- build:js js/combined-<%= project.version %>.min.js -->
+        <script src="js/config.js"></script>
+        <script src="js/vendor/require-jquery-2.1.2.js"></script>
+        <script src="js/main.js"></script>
+        <!-- endbuild -->
+    </body>
+</html>
