@@ -3,7 +3,7 @@ define(['_'], function(_) {
 		nodes: null,
 		i: null,
 
-		init: function(nodes, edges) {
+		init: function(nodes) {
 			this.nodes = _.shuffle(nodes);
 			this.i = [];
 		},

@@ -15,21 +15,33 @@
         defaultColor: '#4f4'
       };
 
-      function Node(system, node) {
+      function Node(system, node, utils) {
         this.system = system;
         this.node = node;
-        this.node.color = this.DEFAULTS.defaultColor;
-        this.node.size = this.DEFAULTS.size;
-        this.node.borderWidth = this.DEFAULTS.borderWidth;
-        this.node.borderColor = this.DEFAULTS.borderColor;
+        this.utils = utils;
+        this.node.data.color = this.DEFAULTS.defaultColor;
+        this.node.data.size = this.DEFAULTS.size;
+        this.node.data.borderWidth = this.DEFAULTS.borderWidth;
+        this.node.data.borderColor = this.DEFAULTS.borderColor;
+        this.marked = false;
       }
 
       Node.prototype.unmark = function() {
-        return this.node.color = this.DEFAULTS.defaultColor;
+        this.marked = false;
+        return this.node.data.color = this.DEFAULTS.defaultColor;
       };
 
       Node.prototype.mark = function() {
-        return this.node.color = this.DEFAULTS.markedColor;
+        this.marked = true;
+        return this.node.data.color = this.DEFAULTS.markedColor;
+      };
+
+      Node.prototype.isMarked = function() {
+        return this.marked;
+      };
+
+      Node.prototype.getDegree = function() {
+        return this.utils.getDegree(this);
       };
 
       Node.prototype.toString = function() {
@@ -52,6 +64,14 @@
         this.edge.color = this.DEFAULTS.color;
         this.edge.size = this.DEFAULTS.size;
       }
+
+      Edge.prototype.from = function() {
+        return this.edge.source.obj;
+      };
+
+      Edge.prototype.to = function() {
+        return this.edge.target.obj;
+      };
 
       return Edge;
 
@@ -82,40 +102,23 @@
         return require(['algo/' + this.prefs.get('algo')], function(algo) {
           _this.algorithm = algo;
           if (_this.algorithm != null) {
-            return _this.algorithm.init(_this.getNodes(), _this.getEdges(), _this.utils);
+            return _this.algorithm.init(_this.utils.getNodes());
           }
         });
       };
 
       Simulator.prototype.newGraph = function() {
+        var _this = this;
         this.system.eachNode(function(node) {
-          return node.obj = new Node(this.system, node);
+          return node.obj = new Node(_this.system, node, _this.utils);
         });
         this.system.eachEdge(function(edge) {
-          return edge.obj = new Edge(this.system, edge);
+          return edge.obj = new Edge(_this.system, edge, _this.utils);
         });
         if (this.algorithm != null) {
-          this.algorithm.init(this.getNodes(), this.getEdges(), this.utils);
+          this.algorithm.init(this.utils.getNodes());
         }
         return this.trigger('newGraph');
-      };
-
-      Simulator.prototype.getNodes = function() {
-        var nodes;
-        nodes = [];
-        this.system.eachNode(function(node) {
-          return nodes.push(node.obj);
-        });
-        return nodes;
-      };
-
-      Simulator.prototype.getEdges = function() {
-        var edges;
-        edges = [];
-        this.system.eachEdge(function(edge) {
-          return edges.push(edge.obj);
-        });
-        return edges;
       };
 
       Simulator.prototype.isRunning = function() {

@@ -2,8 +2,26 @@ define ['_'], (_) ->
   class SimulatorUtils
      constructor: (@simulator) ->
        @system = @simulator.system
+     getNodes : ->
+       nodes = []
+       @system.eachNode (node) ->
+         nodes.push(node.obj)
+       nodes
+     getEdges : ->
+       edges = []
+       @system.eachEdge (edge) ->
+         edges.push(edge.obj)
+       edges
      removeNode: (node) ->
-        @system.pruneNode(node.node)
+        delay = @simulator.prefs.get('delay')
+        @system.tweenNode(node.node.name, delay / 1000, {
+          color : '#000',
+          size: 1,
+          borderWidth: 10
+        })
+        _.delay(=>
+          @system.pruneNode(node.node)
+        , delay / 4 * 3)
      removeEdge: (edge) ->
         @system.pruneEdge(edge.edge)
 
@@ -12,6 +30,9 @@ define ['_'], (_) ->
         nodes2 = _.map nodeSet2, (node) -> node.node.name
 
         _.isEmpty(_.intersection(nodes1, nodes2))
+     getDegree: (node) ->
+        @getNeighbourhood(node).length
+
      getNeighbourhood: (node) ->
         from = @system.getEdgesFrom(node.node)
         to = @system.getEdgesTo(node.node)

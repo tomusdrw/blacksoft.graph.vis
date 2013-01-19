@@ -23,8 +23,8 @@ define(['_', '$', 'backbone'], function(_, $, Backbone) {
 			ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
 			this.particleSystem.eachEdge(function(edge, pt1, pt2) {
-				ctx.strokeStyle = edge.color || "#222";
-				ctx.lineWidth = edge.size || 1;
+				ctx.strokeStyle = edge.data.color || "#222";
+				ctx.lineWidth = edge.data.size || 1;
 				ctx.beginPath();
 				ctx.moveTo(pt1.x, pt1.y);
 				ctx.lineTo(pt2.x, pt2.y);
@@ -32,14 +32,14 @@ define(['_', '$', 'backbone'], function(_, $, Backbone) {
 			});
 
 			this.particleSystem.eachNode(function(node, pt) {
-				var r = node.size || 10;
+				var r = node.data.size || 10;
 
 				ctx.beginPath();
 				ctx.arc(pt.x, pt.y, r, 0, 2 * Math.PI, false);
-				ctx.fillStyle = node.color || "#4f4";
+				ctx.fillStyle = node.data.color || "#4f4";
 				ctx.fill();
-				ctx.lineWidth = node.borderWidth || 1;
-				ctx.strokeStyle = node.borderColor || '#003300';
+				ctx.lineWidth = node.data.borderWidth || 1;
+				ctx.strokeStyle = node.data.borderColor || '#003300';
 				ctx.stroke();
 				ctx.fillStyle = '#222';
 				ctx.font = "bold 10px Verdana"

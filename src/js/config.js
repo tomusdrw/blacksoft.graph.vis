@@ -5,7 +5,7 @@ var require = {
 		'underscore': 'vendor/underscore-1.4.3',
 		'backbone': 'vendor/backbone-0.9.9',
 		'backbone.storage': 'vendor/backbone.localStorage',
-		'arbor': 'vendor/arbor'
+		'arbor': 'vendor/arbor-tween'
 	},
 	map: {
 		'*': {
@@ -21,12 +21,9 @@ var require = {
 			deps: ['underscore'],
 			exports: 'Backbone'
 		},
-    'vendor/arbor-tween' : {
-      deps: ['jquery']
-    },
 		'arbor': {
 			exports: 'arbor',
-      deps: ['vendor/arbor-tween']
+      deps: ['vendor/arbor']
 		}
 	}
 };

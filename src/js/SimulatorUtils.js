@@ -10,8 +10,36 @@
         this.system = this.simulator.system;
       }
 
+      SimulatorUtils.prototype.getNodes = function() {
+        var nodes;
+        nodes = [];
+        this.system.eachNode(function(node) {
+          return nodes.push(node.obj);
+        });
+        return nodes;
+      };
+
+      SimulatorUtils.prototype.getEdges = function() {
+        var edges;
+        edges = [];
+        this.system.eachEdge(function(edge) {
+          return edges.push(edge.obj);
+        });
+        return edges;
+      };
+
       SimulatorUtils.prototype.removeNode = function(node) {
-        return this.system.pruneNode(node.node);
+        var delay,
+          _this = this;
+        delay = this.simulator.prefs.get('delay');
+        this.system.tweenNode(node.node.name, delay / 1000, {
+          color: '#000',
+          size: 1,
+          borderWidth: 10
+        });
+        return _.delay(function() {
+          return _this.system.pruneNode(node.node);
+        }, delay / 4 * 3);
       };
 
       SimulatorUtils.prototype.removeEdge = function(edge) {
@@ -27,6 +55,10 @@
           return node.node.name;
         });
         return _.isEmpty(_.intersection(nodes1, nodes2));
+      };
+
+      SimulatorUtils.prototype.getDegree = function(node) {
+        return this.getNeighbourhood(node).length;
       };
 
       SimulatorUtils.prototype.getNeighbourhood = function(node) {

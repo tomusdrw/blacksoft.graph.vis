@@ -7,16 +7,22 @@ define ['require', 'backbone', 'arbor', 'SimulatorUtils'], (require, Backbone, a
       markedColor: '#f44'
       defaultColor: '#4f4'
     }
-    constructor: (@system, @node) ->
-      @node.color = @DEFAULTS.defaultColor
-      @node.size = @DEFAULTS.size
-      @node.borderWidth = @DEFAULTS.borderWidth
-      @node.borderColor = @DEFAULTS.borderColor
-      
+    constructor: (@system, @node, @utils) ->
+      @node.data.color = @DEFAULTS.defaultColor
+      @node.data.size = @DEFAULTS.size
+      @node.data.borderWidth = @DEFAULTS.borderWidth
+      @node.data.borderColor = @DEFAULTS.borderColor
+      @marked = false
     unmark: ->
-      @node.color = @DEFAULTS.defaultColor
+      @marked = false
+      @node.data.color = @DEFAULTS.defaultColor
     mark: ->
-      @node.color = @DEFAULTS.markedColor
+      @marked = true
+      @node.data.color = @DEFAULTS.markedColor
+    isMarked : ->
+      @marked
+    getDegree : ->
+      @utils.getDegree(this)
     toString : ->
       @node.name
 
@@ -28,6 +34,10 @@ define ['require', 'backbone', 'arbor', 'SimulatorUtils'], (require, Backbone, a
      constructor : (@system, @edge) ->
        @edge.color = @DEFAULTS.color
        @edge.size = @DEFAULTS.size
+     from: ->
+       @edge.source.obj
+     to: ->
+       @edge.target.obj
 
   class Simulator extends Backbone.Model
      defaults : {
@@ -45,26 +55,16 @@ define ['require', 'backbone', 'arbor', 'SimulatorUtils'], (require, Backbone, a
      loadAlgo: ()->
       require ['algo/'+@prefs.get('algo')], (algo) =>
         @algorithm = algo
-        @algorithm.init(@getNodes(), @getEdges(), @utils) if @algorithm?
+        @algorithm.init(@utils.getNodes()) if @algorithm?
         
      newGraph: ()->
-       @system.eachNode (node)->
-         node.obj = new Node(@system, node)
-       @system.eachEdge (edge) ->
-         edge.obj = new Edge(@system, edge)
-       @algorithm.init(@getNodes(), @getEdges(), @utils) if @algorithm?
+       @system.eachNode (node) =>
+         node.obj = new Node(@system, node, @utils)
+       @system.eachEdge (edge) =>
+         edge.obj = new Edge(@system, edge, @utils)
+       @algorithm.init(@utils.getNodes()) if @algorithm?
        @trigger('newGraph')
 
-     getNodes : ->
-        nodes = []
-        @system.eachNode (node) ->
-          nodes.push(node.obj)
-        nodes
-     getEdges : ->
-        edges = []
-        @system.eachEdge (edge) ->
-          edges.push(edge.obj)
-        edges
      isRunning: ->
         @get('running')
      isFinished: ->
