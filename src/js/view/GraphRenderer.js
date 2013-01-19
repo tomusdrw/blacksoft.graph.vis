@@ -1,4 +1,4 @@
-define(['_', 'backbone.storage'], function(_, Backbone) {
+define(['_', '$', 'backbone'], function(_, $, Backbone) {
 	var Renderer = Backbone.Model.extend({
 		particleSystem: null,
 		canvas: null,
@@ -11,7 +11,7 @@ define(['_', 'backbone.storage'], function(_, Backbone) {
 
 		init: function(system) {
 			this.particleSystem = system;
-			system.screenSize(this.canvas.width, this.canvas.height);
+			system.screenSize($(this.canvas).width(), this.canvas.height);
 		},
 		getSystem: function() {
 			return this.particleSystem;

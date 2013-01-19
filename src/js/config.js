@@ -4,7 +4,7 @@ var require = {
 		'bootstrap': 'vendor/bootstrap-2.2.2',
 		'underscore': 'vendor/underscore-1.4.3',
 		'backbone': 'vendor/backbone-0.9.9',
-		'backbone.storage': 'vendor/backbone.webStorage',
+		'backbone.storage': 'vendor/backbone.localStorage',
 		'arbor': 'vendor/arbor'
 	},
 	map: {
@@ -19,10 +19,6 @@ var require = {
 		},
 		'backbone': {
 			deps: ['underscore'],
-			exports: 'Backbone'
-		},
-		'backbone.storage': {
-			deps: ['backbone'],
 			exports: 'Backbone'
 		},
     'vendor/arbor-tween' : {

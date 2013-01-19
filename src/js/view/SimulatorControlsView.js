@@ -10,13 +10,16 @@ define(['backbone'], function(Backbone) {
 
 		initialize: function() {
 			this.model.on('change:running', this.updateState, this);
+      this.model.on('change:finished', this.updateState, this);
 		},
 
 		updateState: function() {
 			var isRunning = this.model.isRunning();
+      var isFinished = this.model.isFinished();
 
-			this.$('.start').parent().toggleClass('hidden', isRunning);
-			this.$('.stop').parent().toggleClass('hidden', ! isRunning);
+			this.$('.start').parent().toggleClass('hidden', isRunning || isFinished);
+			this.$('.stop').parent().toggleClass('hidden', !isRunning || isFinished);
+      this.$('.restart').parent().toggleClass('hidden', !isFinished);
 		},
 
 		startSimulation: function() {
@@ -30,7 +33,7 @@ define(['backbone'], function(Backbone) {
 			this.model.step();
 		},
 		restartSimulation: function() {
-			window.location.reload();
+      this.model.restart();
 		}
 
 	});

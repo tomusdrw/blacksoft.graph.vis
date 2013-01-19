@@ -1,4 +1,4 @@
-define ['backbone', 'arbor', 'SimulatorUtils'], (Backbone, arbor, SimulatorUtils) ->
+define ['require', 'backbone', 'arbor', 'SimulatorUtils'], (require, Backbone, arbor, SimulatorUtils) ->
   class Node
     DEFAULTS: {
       size: 10
@@ -32,15 +32,28 @@ define ['backbone', 'arbor', 'SimulatorUtils'], (Backbone, arbor, SimulatorUtils
   class Simulator extends Backbone.Model
      defaults : {
        step: 0
+       running : false
+       finished: false
      }
-     constructor: (@system, @algorithm) ->
+     constructor: (@graph, @system, @prefs) ->
        super()
-       @system.eachNode (node)->
-         node.obj = new Node(system, node)
-       @system.eachEdge (edge) ->
-         edge.obj = new Edge(system, edge)
        @utils = new SimulatorUtils(this)
-       @algorithm.init(@getNodes(), @getEdges(), @utils)
+       @graph.on('change', @newGraph, this)
+       @prefs.on('change:algo', @loadAlgo, this)
+       @loadAlgo()
+
+     loadAlgo: ()->
+      require ['algo/'+@prefs.get('algo')], (algo) =>
+        @algorithm = algo
+        @algorithm.init(@getNodes(), @getEdges(), @utils) if @algorithm?
+        
+     newGraph: ()->
+       @system.eachNode (node)->
+         node.obj = new Node(@system, node)
+       @system.eachEdge (edge) ->
+         edge.obj = new Edge(@system, edge)
+       @algorithm.init(@getNodes(), @getEdges(), @utils) if @algorithm?
+       @trigger('newGraph')
 
      getNodes : ->
         nodes = []
@@ -54,27 +67,41 @@ define ['backbone', 'arbor', 'SimulatorUtils'], (Backbone, arbor, SimulatorUtils
         edges
      isRunning: ->
         @get('running')
-     start: (stepTime) ->
-        stepTime ?= 1000
+     isFinished: ->
+        @get('finished')
+     restart : ->
+        @graph.reparse()
+        # Soooo shitty!
+        _.delay(=>
+          @newGraph()
+          @start()
+        , 100)
+     start: () ->
+        if not @algorithm?
+          throw Error("No algorithm!")
+        @set('step', 0)
+        @set('running', true)
+        @set('finished', false)
+
+        # Run in intervals
         @interval = window.setInterval(=>
           res = @step()
           if (res?)
-            @trigger('message', "Algorithm finished with result: " + res)
             @stop()
-        , stepTime)
-        @set('running', true)
+        , @prefs.get('delay'))
      stop: ->
         window.clearInterval(@interval) if @interval?
         @set('running', false)
      step: ->
         if @algorithm.isDone()
-          @trigger('message', "Algorithm finished")
+          @set('finished', true)
+          @trigger('message', "Algorithm finished with result: "+@algorithm.getResult())
           return @algorithm.getResult()
 
         @set('step', @get('step') + 1)
         msg = @algorithm.step(@utils)
         @trigger('message', msg) if msg?
-        if @algorithm.isDone() then @algorithm.getResult() else null
+        null
 
 
     return Simulator

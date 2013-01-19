@@ -5,6 +5,11 @@ define(['backbone', '_'], function(Backbone, _) {
 		tpl: _.template('<p><span class="label label-info"><i class="icon icon-time"></i> <%= step %></span></p>'),
 		initialize: function() {
 			this.model.on('message', this.appendMessage, this);
+			this.model.on('newGraph', this.clearLog, this);
+			this.$el.empty();
+		},
+
+		clearLog: function(msg) {
 			this.$el.empty();
 		},
 
@@ -12,14 +17,16 @@ define(['backbone', '_'], function(Backbone, _) {
 			if (!_.isArray(msg)) {
 				msg = [msg];
 			}
-      $div = $(this.tpl({step : this.model.get('step')}));
+			$div = $(this.tpl({
+				step: this.model.get('step')
+			}));
 
 			_.each(msg, function(m) {
-				$div.append("<div>"+m+"</div>");
+				$div.append("<div>" + m + "</div>");
 			},
 			this);
 
-      this.$el.prepend($div);
+			this.$el.prepend($div);
 		}
 
 	});

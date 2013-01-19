@@ -1,0 +1,52 @@
+/*
+ * Classic example grammar, which recognizes simple arithmetic expressions like
+ * "2*(3+4)". The parser generated from this grammar then computes their value.
+ */
+{
+ var concat = function(a, b) {
+   var result = [];
+   var exists = {};
+   [a, b].forEach(function(arr) {
+     arr.forEach(function(x) {
+       if (!exists[x]) {
+         exists[x] = true;
+         result.push(x);
+       }
+     });
+   });
+
+   return result;
+ };
+
+}
+
+start
+  = chains
+
+chains
+  = l:chain_expr "\n" c:chains { 
+return {
+  first : l.first,
+  /* Remove duplicates? */
+  nodes : concat(l.nodes, c.nodes),
+  edges : l.edges.concat(c.edges)
+}
+}
+  / l:chain_expr
+
+chain_expr
+  = n:node sep* "--" sep* right:chain_expr {
+return {
+  first : n.first,
+  nodes : concat(n.nodes, right.nodes),
+  edges : right.edges.concat([[n.first, right.first]])
+}
+}
+  / n:node { return n; }
+
+
+node 
+ = n:[a-z0-9A-Z]+ { return { first: n.join(""), nodes: [n.join("")], edges : [] }; }
+
+sep
+  = [' '\t\r]

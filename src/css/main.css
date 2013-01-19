@@ -6,7 +6,8 @@ body {
 	padding: 60px 0;
 }
 .main .canvas {
-  margin: 20px auto;
+  width: 100%;
+  margin-bottom: 20px;
   display: block;
   box-shadow: 0 0 10px #aaf;
 }

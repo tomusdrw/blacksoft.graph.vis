@@ -24,7 +24,7 @@
         <![endif]-->
 
   
-            <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar navbar-fixed-top">
                 <div class="navbar-inner">
                     <div class="container">
                       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -34,11 +34,11 @@
                       </a>
                       <a class="brand" href="#"><i class="icon icon-facetime-video"></i> mis.vis</a>
                       <div class="nav-collapse collapse">
-                        <ul class="nav">
-                          <li><a class="start" href="#start"><i class="icon icon-play"></i> Start</a></li>
-                          <li class="hidden"><a class="stop active" href="#stop"><i class="icon icon-stop"></i> Stop</a><li>
+                        <ul class="nav pull-right">
+                          <li><a class="start" href="#log"><i class="icon icon-play"></i> Start</a></li>
+                          <li class="hidden active"><a class="stop" href="#stop"><i class="icon icon-pause"></i> Pause</a><li>
+                          <li class="hidden"><a class="restart" href="#restart"><i class="icon icon-repeat"></i> Restart</a></li>
                           <li><a class="step" href="#step"><i class="icon icon-step-forward"></i> Step</a></li>
-                          <li><a class="restart" href="#restart"><i class="icon icon-repeat"></i> Restart</a></li>
                         </ul>
                       </div><!--/.nav-collapse -->
                     </div>
@@ -47,15 +47,64 @@
 
             <div class="container">
 
-            <!-- Main hero unit for a primary marketing message or call to action -->
-            <div class="main">
-                <canvas class="canvas" width="600" height="400"></canvas>
-            </div>
-            <div class="well simulator-log">
-                <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+            <div class="main row">
+                <div class="span8">
+                    <canvas class="canvas" width="770" height="350"></canvas>
+                </div>
+                <div class="span4">
+                 <div class="row-fluid">
+                    <form class="well">
+                      <ul class="nav nav-tabs">
+                        <li class="active"><a href="#preferences" data-toggle="tab">Preferences</a></li>
+                        <li><a href="#log" data-toggle="tab">Log</a></li>
+                      </ul>
+                    <div class="tab-content">
+                    <div class="tab-pane active" id="preferences">
+                      <fieldset>
+                        <legend>General options</legend>
+                        <label>
+                          <span class="span4">
+                          Step delay
+                          </span>
+                          <select class="select-delay">
+                            <option value="50">50 ms</option>
+                            <option value="100">100 ms</option>
+                            <option value="250">250 ms</option>
+                            <option value="500">500 ms</option>
+                            <option value="1000" selected>1000 ms</option>
+                            <option value="2500">2500 ms</option>
+                            <option value="5000">5000 ms</option>
+                            </select>
+                        </label>
+                        <label>
+                          <span class="span4">
+                            Algorithm
+                          </span>
+                          <select class="select-algorithm">
+                            <option value="Simple">Simple algorithm</option>
+                            <option value="Randomized">Randomized parallel algorithm</option>
+                          </select>
+                        </label>
+                      </fieldset>
+                      <fieldset class="control-group">
+                        <legend>Input graph</legend>
+                        <textarea class="graph-input span12" rows="7">b -- a -- c
+d -- a
+f</textarea>
+<div class="alert alert-block alert-error fade">
+</div>
+                        <!-- <button class="graph-load btn"><i class="icon icon-load"></i> Load graph</button> -->
+                      </fieldset>
+                    </div>
+                    <div class="tab-pane" id="log">
+                      <div class="simulator-log"></div>
+                    </div>
+                    </div>
+                    </form>
+                  </div>
+                </div>
             </div>
 
-            <hr>
             <footer>
                 <p>&copy; Blacksoft 2013</p>
             </footer>

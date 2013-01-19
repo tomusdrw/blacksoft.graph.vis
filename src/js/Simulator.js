@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['backbone', 'arbor', 'SimulatorUtils'], function(Backbone, arbor, SimulatorUtils) {
+  define(['require', 'backbone', 'arbor', 'SimulatorUtils'], function(require, Backbone, arbor, SimulatorUtils) {
     var Edge, Node, Simulator;
     Node = (function() {
 
@@ -61,22 +61,44 @@
       __extends(Simulator, _super);
 
       Simulator.prototype.defaults = {
-        step: 0
+        step: 0,
+        running: false,
+        finished: false
       };
 
-      function Simulator(system, algorithm) {
+      function Simulator(graph, system, prefs) {
+        this.graph = graph;
         this.system = system;
-        this.algorithm = algorithm;
+        this.prefs = prefs;
         Simulator.__super__.constructor.call(this);
+        this.utils = new SimulatorUtils(this);
+        this.graph.on('change', this.newGraph, this);
+        this.prefs.on('change:algo', this.loadAlgo, this);
+        this.loadAlgo();
+      }
+
+      Simulator.prototype.loadAlgo = function() {
+        var _this = this;
+        return require(['algo/' + this.prefs.get('algo')], function(algo) {
+          _this.algorithm = algo;
+          if (_this.algorithm != null) {
+            return _this.algorithm.init(_this.getNodes(), _this.getEdges(), _this.utils);
+          }
+        });
+      };
+
+      Simulator.prototype.newGraph = function() {
         this.system.eachNode(function(node) {
-          return node.obj = new Node(system, node);
+          return node.obj = new Node(this.system, node);
         });
         this.system.eachEdge(function(edge) {
-          return edge.obj = new Edge(system, edge);
+          return edge.obj = new Edge(this.system, edge);
         });
-        this.utils = new SimulatorUtils(this);
-        this.algorithm.init(this.getNodes(), this.getEdges(), this.utils);
-      }
+        if (this.algorithm != null) {
+          this.algorithm.init(this.getNodes(), this.getEdges(), this.utils);
+        }
+        return this.trigger('newGraph');
+      };
 
       Simulator.prototype.getNodes = function() {
         var nodes;
@@ -100,20 +122,34 @@
         return this.get('running');
       };
 
-      Simulator.prototype.start = function(stepTime) {
+      Simulator.prototype.isFinished = function() {
+        return this.get('finished');
+      };
+
+      Simulator.prototype.restart = function() {
         var _this = this;
-        if (stepTime == null) {
-          stepTime = 1000;
+        this.graph.reparse();
+        return _.delay(function() {
+          _this.newGraph();
+          return _this.start();
+        }, 100);
+      };
+
+      Simulator.prototype.start = function() {
+        var _this = this;
+        if (!(this.algorithm != null)) {
+          throw Error("No algorithm!");
         }
-        this.interval = window.setInterval(function() {
+        this.set('step', 0);
+        this.set('running', true);
+        this.set('finished', false);
+        return this.interval = window.setInterval(function() {
           var res;
           res = _this.step();
           if ((res != null)) {
-            _this.trigger('message', "Algorithm finished with result: " + res);
             return _this.stop();
           }
-        }, stepTime);
-        return this.set('running', true);
+        }, this.prefs.get('delay'));
       };
 
       Simulator.prototype.stop = function() {
@@ -126,7 +162,8 @@
       Simulator.prototype.step = function() {
         var msg;
         if (this.algorithm.isDone()) {
-          this.trigger('message', "Algorithm finished");
+          this.set('finished', true);
+          this.trigger('message', "Algorithm finished with result: " + this.algorithm.getResult());
           return this.algorithm.getResult();
         }
         this.set('step', this.get('step') + 1);
@@ -134,11 +171,7 @@
         if (msg != null) {
           this.trigger('message', msg);
         }
-        if (this.algorithm.isDone()) {
-          return this.algorithm.getResult();
-        } else {
-          return null;
-        }
+        return null;
       };
 
       return Simulator;

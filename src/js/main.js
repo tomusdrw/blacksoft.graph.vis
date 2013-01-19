@@ -1,25 +1,30 @@
-require(['bootstrap', '$', 'arbor', 'GraphRenderer', 'Simulator', 'SimulatorControlsView', 'SimulatorLogView', 'utils', 'algo/Simple'], //
-function(btstrp, $, arbor, Renderer, Simulator, SimView, SimLog, utils, SimpleAlgo) {
-	var sys = arbor.ParticleSystem(100, 600, 0.1);
-	sys.parameters({
-		gravity: true
-	});
-	sys.addEdge('a', 'b');
-	sys.addEdge('a', 'c');
-	sys.addEdge('a', 'd');
-	sys.addNode('f');
-
+require(['bootstrap', '$', 'system', 'view/GraphRenderer', 'Graph', 'Preferences', 'view/PreferencesView', 'Simulator', 'view/SimulatorControlsView', 'view/SimulatorLogView'], //
+function(btstrp, $, sys, Renderer, Graph, Pref, PrefView, Simulator, SimCtrlView, SimLogView) {
 	sys.renderer = new Renderer($('.main .canvas')[0]);
 
-	window.setTimeout(function() {
-		var simulator = new Simulator(sys.renderer.getSystem(), SimpleAlgo);
-		var simView = new SimView({
-			model: simulator
-		});
-		var simLog = new SimLog({
-			model: simulator
-		});
+	var app = {};
+	app.sys = sys;
+	app.graph = new Graph(sys);
+
+	app.prefs = new Pref({
+		id: 1
 	},
-	500);
+	app.graph);
+	app.prefsView = new PrefView({
+		model: app.prefs
+	});
+
+	app.sim = new Simulator(app.graph, sys, app.prefs);
+	app.simView = new SimCtrlView({
+		model: app.sim
+	});
+	app.simLog = new SimLogView({
+		model: app.sim
+	});
+
+  app.prefs.fetch();
+
+	window.app = app;
+
 });
 
