@@ -1,5 +1,6 @@
-require(['bootstrap', '$', 'arbor', 'GraphRenderer', 'Simulator', 'SimulatorView'], function(btstrp, $, arbor, Renderer, Simulator, SimView) {
-	var sys = arbor.ParticleSystem(1000, 600, 0.5);
+require(['bootstrap', '$', 'arbor', 'GraphRenderer', 'Simulator', 'SimulatorControlsView', 'SimulatorLogView', 'utils', 'algo/Simple'], //
+function(btstrp, $, arbor, Renderer, Simulator, SimView, SimLog, utils, SimpleAlgo) {
+	var sys = arbor.ParticleSystem(100, 600, 0.1);
 	sys.parameters({
 		gravity: true
 	});
@@ -10,9 +11,15 @@ require(['bootstrap', '$', 'arbor', 'GraphRenderer', 'Simulator', 'SimulatorView
 
 	sys.renderer = new Renderer($('.main .canvas')[0]);
 
-	var simulator = new Simulator(sys);
-	var simView = new SimView({
-		model: simulator
-	});
+	window.setTimeout(function() {
+		var simulator = new Simulator(sys.renderer.getSystem(), SimpleAlgo);
+		var simView = new SimView({
+			model: simulator
+		});
+		var simLog = new SimLog({
+			model: simulator
+		});
+	},
+	500);
 });
 

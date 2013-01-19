@@ -21,7 +21,6 @@ define(['backbone'], function(Backbone) {
 
 		startSimulation: function() {
 			var stepTime = 1000;
-      console.log(this.model);
 			this.model.start(stepTime);
 		},
 		stopSimulation: function() {

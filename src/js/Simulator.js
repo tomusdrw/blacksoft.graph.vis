@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['_', 'backbone', 'arbor'], function(_, Backbone, arbor) {
+  define(['backbone', 'arbor', 'SimulatorUtils'], function(Backbone, arbor, SimulatorUtils) {
     var Edge, Node, Simulator;
     Node = (function() {
 
@@ -32,6 +32,10 @@
         return this.node.color = this.DEFAULTS.markedColor;
       };
 
+      Node.prototype.toString = function() {
+        return this.node.name;
+      };
+
       return Node;
 
     })();
@@ -56,8 +60,13 @@
 
       __extends(Simulator, _super);
 
-      function Simulator(system) {
+      Simulator.prototype.defaults = {
+        step: 0
+      };
+
+      function Simulator(system, algorithm) {
         this.system = system;
+        this.algorithm = algorithm;
         Simulator.__super__.constructor.call(this);
         this.system.eachNode(function(node) {
           return node.obj = new Node(system, node);
@@ -65,15 +74,9 @@
         this.system.eachEdge(function(edge) {
           return edge.obj = new Edge(system, edge);
         });
+        this.utils = new SimulatorUtils(this);
+        this.algorithm.init(this.getNodes(), this.getEdges(), this.utils);
       }
-
-      Simulator.prototype.removeNode = function(node) {
-        return this.system.pruneNode(node.node);
-      };
-
-      Simulator.prototype.removeEdge = function(edge) {
-        return this.system.pruneEdge(edge.edge);
-      };
 
       Simulator.prototype.getNodes = function() {
         var nodes;
@@ -103,7 +106,12 @@
           stepTime = 1000;
         }
         this.interval = window.setInterval(function() {
-          return _this.step();
+          var res;
+          res = _this.step();
+          if ((res != null)) {
+            _this.trigger('message', "Algorithm finished with result: " + res);
+            return _this.stop();
+          }
         }, stepTime);
         return this.set('running', true);
       };
@@ -117,9 +125,19 @@
 
       Simulator.prototype.step = function() {
         var msg;
-        msg = this.algorithm.step(this.getNodes(), this.getEdges());
+        if (this.algorithm.isDone()) {
+          this.trigger('message', "Algorithm finished");
+          return this.algorithm.getResult();
+        }
+        this.set('step', this.get('step') + 1);
+        msg = this.algorithm.step(this.utils);
         if (msg != null) {
-          return this.trigger('message', msg);
+          this.trigger('message', msg);
+        }
+        if (this.algorithm.isDone()) {
+          return this.algorithm.getResult();
+        } else {
+          return null;
         }
       };
 

@@ -1,4 +1,4 @@
-define ['_', 'backbone', 'arbor'], (_, Backbone, arbor) ->
+define ['backbone', 'arbor', 'SimulatorUtils'], (Backbone, arbor, SimulatorUtils) ->
   class Node
     DEFAULTS: {
       size: 10
@@ -17,6 +17,9 @@ define ['_', 'backbone', 'arbor'], (_, Backbone, arbor) ->
       @node.color = @DEFAULTS.defaultColor
     mark: ->
       @node.color = @DEFAULTS.markedColor
+    toString : ->
+      @node.name
+
   class Edge
      DEFAULTS : {
        size : 2
@@ -26,17 +29,19 @@ define ['_', 'backbone', 'arbor'], (_, Backbone, arbor) ->
        @edge.color = @DEFAULTS.color
        @edge.size = @DEFAULTS.size
 
-   class Simulator extends Backbone.Model
-     constructor: (@system) ->
+  class Simulator extends Backbone.Model
+     defaults : {
+       step: 0
+     }
+     constructor: (@system, @algorithm) ->
        super()
        @system.eachNode (node)->
          node.obj = new Node(system, node)
        @system.eachEdge (edge) ->
          edge.obj = new Edge(system, edge)
-     removeNode: (node) ->
-        @system.pruneNode(node.node)
-     removeEdge: (edge) ->
-        @system.pruneEdge(edge.edge)
+       @utils = new SimulatorUtils(this)
+       @algorithm.init(@getNodes(), @getEdges(), @utils)
+
      getNodes : ->
         nodes = []
         @system.eachNode (node) ->
@@ -52,15 +57,24 @@ define ['_', 'backbone', 'arbor'], (_, Backbone, arbor) ->
      start: (stepTime) ->
         stepTime ?= 1000
         @interval = window.setInterval(=>
-          @step()
+          res = @step()
+          if (res?)
+            @trigger('message', "Algorithm finished with result: " + res)
+            @stop()
         , stepTime)
         @set('running', true)
      stop: ->
         window.clearInterval(@interval) if @interval?
         @set('running', false)
      step: ->
-        msg = @algorithm.step(@getNodes(), @getEdges())
+        if @algorithm.isDone()
+          @trigger('message', "Algorithm finished")
+          return @algorithm.getResult()
+
+        @set('step', @get('step') + 1)
+        msg = @algorithm.step(@utils)
         @trigger('message', msg) if msg?
+        if @algorithm.isDone() then @algorithm.getResult() else null
 
 
-   return Simulator
+    return Simulator

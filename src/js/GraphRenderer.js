@@ -11,8 +11,10 @@ define(['_', 'backbone.storage'], function(_, Backbone) {
 
 		init: function(system) {
 			this.particleSystem = system;
-
 			system.screenSize(this.canvas.width, this.canvas.height);
+		},
+		getSystem: function() {
+			return this.particleSystem;
 		},
 		redraw: function() {
 			var ctx = this.ctx;
@@ -39,10 +41,10 @@ define(['_', 'backbone.storage'], function(_, Backbone) {
 				ctx.lineWidth = node.borderWidth || 1;
 				ctx.strokeStyle = node.borderColor || '#003300';
 				ctx.stroke();
-        ctx.fillStyle = '#222';
-        ctx.font = "bold 10px Verdana"
-        ctx.textBaseline = "top";
-        ctx.fillText(node.name, pt.x - r/4, pt.y - r/2);
+				ctx.fillStyle = '#222';
+				ctx.font = "bold 10px Verdana"
+				ctx.textBaseline = "top";
+				ctx.fillText(node.name, pt.x - r / 4, pt.y - r / 2);
 			});
 		}
 	});
