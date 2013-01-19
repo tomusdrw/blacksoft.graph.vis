@@ -1,4 +1,4 @@
-define(['backbone', '_'], function(Backbone, _) {
+define(['jquery', 'backbone', '_'], function($, Backbone, _) {
 
 	var msgView = Backbone.View.extend({
 		el: '.simulator-log',
@@ -10,16 +10,16 @@ define(['backbone', '_'], function(Backbone, _) {
 		},
 
 		clearLog: function(e, value) {
-      if (!value) {
-  			this.$el.empty();
-      }
+			if (!value) {
+				this.$el.empty();
+			}
 		},
 
 		appendMessage: function(msg) {
 			if (!_.isArray(msg)) {
 				msg = [msg];
 			}
-			$div = $(this.tpl({
+			var $div = $(this.tpl({
 				step: this.model.get('step')
 			}));
 

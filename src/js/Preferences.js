@@ -1,4 +1,4 @@
-define(['DotParser', 'backbone', 'backbone.storage'], function(DotParser, Backbone, Store) {
+define(['_', 'DotParser', 'backbone', 'backbone.storage'], function(_, DotParser, Backbone, Store) {
 	var Prefs = Backbone.Model.extend({
 		localStorage: new Store("preferences"),
 		defaults: {

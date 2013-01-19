@@ -5,12 +5,13 @@ var require = {
 		'underscore': 'vendor/underscore-1.4.3',
 		'backbone': 'vendor/backbone-0.9.9',
 		'backbone.storage': 'vendor/backbone.localStorage',
-		'arbor': 'vendor/arbor-tween'
+		'arbor': 'vendor/arbor-tween',
+    'jquery' : 'vendor/jquery-1.9.0'
 	},
 	map: {
 		'*': {
 			'_': 'underscore',
-			'$': 'jquery'
+      '$': 'jquery'
 		}
 	},
 	shim: {

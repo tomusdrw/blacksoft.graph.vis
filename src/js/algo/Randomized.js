@@ -39,7 +39,7 @@ define(['_'], function(_) {
 			if (this.internalStep === this.STEPS.MARK_V) {
 				//2.1
 				_.each(this.nodes, function(node) {
-					var deg = node.getDegree()
+					var deg = node.getDegree();
 					if (deg === 0) {
 						msgs.push(this.node(node) + "is isolated adding to result.");
 						this.i.push(node);

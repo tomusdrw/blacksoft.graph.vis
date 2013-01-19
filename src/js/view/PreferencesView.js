@@ -1,4 +1,4 @@
-define(['$', 'backbone'], function($, Backbone) {
+define(['_', 'jquery', 'backbone'], function(_, $, Backbone) {
 	var PrefsView = Backbone.View.extend({
 		el: '#preferences',
 		events: {

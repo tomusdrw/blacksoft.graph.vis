@@ -1,4 +1,4 @@
-define(['_', '$', 'backbone'], function(_, $, Backbone) {
+define(['_', 'jquery', 'backbone'], function(_, $, Backbone) {
 	var Renderer = Backbone.Model.extend({
 		particleSystem: null,
 		canvas: null,
@@ -42,7 +42,7 @@ define(['_', '$', 'backbone'], function(_, $, Backbone) {
 				ctx.strokeStyle = node.data.borderColor || '#003300';
 				ctx.stroke();
 				ctx.fillStyle = '#222';
-				ctx.font = "bold 10px Verdana"
+				ctx.font = "bold 10px Verdana";
 				ctx.textBaseline = "top";
 				ctx.fillText(node.name, pt.x - r / 4, pt.y - r / 2);
 			});

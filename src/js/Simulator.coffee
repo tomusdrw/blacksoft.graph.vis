@@ -108,7 +108,9 @@ define ['require', 'backbone', 'arbor', 'SimulatorUtils'], (require, Backbone, a
      step: ->
         if @algorithm.isDone()
           @set('finished', true)
-          @trigger('message', "Algorithm finished with result: "+@algorithm.getResult())
+          nodes = _.map @algorithm.getResult(), (node) ->
+            '<span class="label label-success">'+node+'</span>'
+          @trigger('message', "Algorithm finished with result: "+nodes)
           return @algorithm.getResult()
 
         @set('step', @get('step') + 1)

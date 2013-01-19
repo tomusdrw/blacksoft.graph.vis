@@ -184,10 +184,13 @@
       };
 
       Simulator.prototype.step = function() {
-        var msg;
+        var msg, nodes;
         if (this.algorithm.isDone()) {
           this.set('finished', true);
-          this.trigger('message', "Algorithm finished with result: " + this.algorithm.getResult());
+          nodes = _.map(this.algorithm.getResult(), function(node) {
+            return '<span class="label label-success">' + node + '</span>';
+          });
+          this.trigger('message', "Algorithm finished with result: " + nodes);
           return this.algorithm.getResult();
         }
         this.set('step', this.get('step') + 1);

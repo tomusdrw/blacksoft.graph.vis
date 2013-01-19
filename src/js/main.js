@@ -1,4 +1,4 @@
-require(['bootstrap', '$', 'system', 'view/GraphRenderer', 'Graph', 'Preferences', 'view/PreferencesView', 'Simulator', 'view/SimulatorControlsView', 'view/SimulatorLogView'], //
+require(['bootstrap', 'jquery', 'system', 'view/GraphRenderer', 'Graph', 'Preferences', 'view/PreferencesView', 'Simulator', 'view/SimulatorControlsView', 'view/SimulatorLogView'], //
 function(btstrp, $, sys, Renderer, Graph, Pref, PrefView, Simulator, SimCtrlView, SimLogView) {
 	sys.renderer = new Renderer($('.main .canvas')[0]);
 
