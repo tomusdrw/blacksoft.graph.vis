@@ -12,6 +12,7 @@ define(['_', 'jquery', 'backbone'], function(_, $, Backbone) {
 			this.model.on('change:algo', this.updateAlgo, this);
 			this.model.on('change:graphText', this.updateGraph, this);
 			//update graph
+      this.updateGraph();
 			this.changeGraph = _.debounce(this.changeGraph, 1000);
 		},
 		updateAll: function() {

@@ -5,11 +5,13 @@ define(['_', 'DotParser', 'backbone', 'backbone.storage'], function(_, DotParser
 			graph: {},
 			delay: 1000,
 			algo: 'Simple',
-			graphError: ""
+			graphError: "",
+      graphText : "a -- b -- c -- a\na -- d"
 		},
 		initialize: function(options, graph) {
 			this.graph = graph;
 			this.on('change:graph', this.updateGraph, this);
+      this.parseGraph(this.get('graphText'));
 		},
 		updateGraph: function(e) {
 			if (this.isGraphChanged(this.currentGraph)) {
