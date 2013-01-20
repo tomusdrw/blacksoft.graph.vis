@@ -51,6 +51,20 @@
             <div class="main row">
                 <div class="span8">
                     <canvas class="canvas" width="770" height="350"></canvas>
+                    <div class="hero-unit">
+						<h3>MIS algorithms visualisation</h3>
+						<p>
+						This application is intended to visualise algorithms finding Maximal Indepenent Set. 
+						There are two implementations: <span class="label">Simple</span> and <span class="label label-info">Randomized</span>.
+						</p>
+						<h3><span class="label">Simple</span> Naive algorithm</h3>
+						This algorithms tries puts a node to the result iff any node from his neighbour is not already in result.
+						Complexity is obviously linear.
+						<h3><span class="label label-info">Randomized</span> Parallel algorithm</h3>
+						Second algorithm is randomized algorithm that puts to the result with higher probability nodes that have smallest degree.
+						In second phase original graph is modified and nodes that are already part of the result are removed along with their neighbourhood.
+						This algorithm has complexity of <span class="label label-success">O(log n)</span> and can be executed in parallel (with some synchronization between phases).
+                    </div>
                 </div>
                 <div class="span4">
                  <div class="row-fluid">
@@ -84,6 +98,8 @@
                           <select class="select-algorithm">
                             <option value="Simple">Simple algorithm</option>
                             <option value="Randomized">Randomized parallel algorithm</option>
+
+                            <option value="NodeRemoval">Node removal problem</option>
                           </select>
                         </label>
                       </fieldset>
