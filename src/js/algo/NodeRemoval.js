@@ -7,11 +7,11 @@ define(['_'], function(_) {
 		init: function(nodes) {
 			this.nodes = _.shuffle(nodes);
 			this.phase = 1;
-      this.steps = 0;
+			this.steps = 0;
 		},
 
 		step: function(utils) {
-      this.steps++;
+			this.steps++;
 
 			var msgs = [];
 			this.nodes = utils.getNodes();
@@ -33,9 +33,9 @@ define(['_'], function(_) {
 			} else {
 				//remove some nodes
 				_.each(this.nodes, function(node) {
-          if (!node.isMarked()) {
-            return;
-          }
+					if (!node.isMarked()) {
+						return;
+					}
 					if (Math.random() < this.p) {
 						msgs.push("Removing node: <span class=\"label\">" + node + "</span>");
 						utils.removeNode(node);

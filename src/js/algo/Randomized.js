@@ -34,7 +34,7 @@ define(['_'], function(_) {
 
 		step: function(utils) {
 			var msgs = [];
-      this.nodes = utils.getNodes();
+			this.nodes = utils.getNodes();
 
 			if (this.internalStep === this.STEPS.MARK_V) {
 				//2.1
